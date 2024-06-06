@@ -21,11 +21,12 @@ export default {
 
 <style>
 .header {
-  height: 10%;
+  min-height: 5%;
+  max-height: 5%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
 }
 
 .header-title {
