@@ -1,20 +1,16 @@
 <template>
-  <section class="appFilter__container">
-    <form class="appFilter__form">
-      <span class="appFilter__input-icon"
+  <section class="appFilter-container">
+    <form class="appFilter-form">
+      <span class="appFilter-input-icon"
         ><font-awesome-icon icon="fa-solid fa-filter"
       /></span>
-      <input
-        type="text"
-        class="appFilter__input"
-        placeholder="Référence du bâtiment"
-      />
-      <button type="submit" class="appFilter__btn">
+      <input type="text" class="appFilter-input" :placeholder="placeholder" />
+      <button type="submit" class="appFilter-btn">
         <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
       </button>
     </form>
-    <div class="appFilter__divider"></div>
-    <ul class="appFilter__list">
+    <div class="appFilter-divider"></div>
+    <ul class="appFilter-list">
       <slot></slot>
     </ul>
   </section>
@@ -23,11 +19,15 @@
 <script>
 export default {
   name: "AppFilter",
+  props: {
+    placeholder: String,
+  },
 };
 </script>
 
 <style>
-.appFilter__container {
+.appFilter-container {
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,7 +38,7 @@ export default {
   box-shadow: var(--box-shadow);
 }
 
-.appFilter__form {
+.appFilter-form {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -47,8 +47,8 @@ export default {
   position: relative;
 }
 
-.appFilter__input-icon,
-.appFilter__btn {
+.appFilter-input-icon,
+.appFilter-btn {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -59,12 +59,12 @@ export default {
   border-radius: var(--border-radius-lg);
 }
 
-.appFilter__input-icon {
+.appFilter-input-icon {
   left: 0.6rem;
   font-size: 0.8rem;
 }
 
-.appFilter__input {
+.appFilter-input {
   width: 100%;
   border: none;
   outline: none;
@@ -73,19 +73,19 @@ export default {
   border-radius: var(--border-radius-lg);
 }
 
-.appFilter__btn {
+.appFilter-btn {
   border: none;
   right: 0.6rem;
 }
 
-.appFilter__divider {
+.appFilter-divider {
   align-self: flex-start;
   width: 95%;
   height: 1.3px;
   background-color: var(--color-grey);
 }
 
-.appFilter__list {
+.appFilter-list {
   width: 100%;
   height: 100%;
   display: flex;

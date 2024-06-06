@@ -1,11 +1,21 @@
 <template>
-  <div class="floorList__container">
-    <NameCard class="floorList__nameCard" />
-    <AppFilter class="floorList__appFilter">
-      <li class="floorList__appFilter-container">
-        <div class="floorList__appFilter-content">
-          <div class="floorList__appFilter-name">RDC</div>
-          <span class="floorList__appFilter-type">geographicbuilding</span>
+  <div v-show="selectedBuilding" class="floorList-container">
+    <NameCard
+      class="floorList-nameCard"
+      :dynamicId="selectedBuilding?.dynamicId"
+      :name="selectedBuilding?.name"
+      :type="selectedBuilding?.type"
+    />
+    <AppFilter class="floorList-appFilter" placeholder="Référence de l'étage">
+      <li
+        @click="displayFloorDescription(floor)"
+        class="floorList-appFilter-container"
+        v-for="floor in floors"
+        :key="floor.staticId"
+      >
+        <div class="floorList-appFilter-content">
+          <div class="floorList-appFilter-name">{{ floor.name }}</div>
+          <span class="floorList-appFilter-type">{{ floor.type }}</span>
         </div>
         <div class="">90%</div>
       </li>
@@ -15,25 +25,48 @@
 <script>
 export default {
   name: "FloorList",
+  data() {
+    return {
+      selectedFloor: {},
+    };
+  },
+  props: {
+    selectedBuilding: { type: Object },
+    floors: {
+      type: Array,
+      required: true,
+    },
+  },
+  methods: {
+    displayFloorDescription(floor) {
+      this.selectedFloor = floor;
+      this.$emit("floor-selected", floor);
+    },
+  },
 };
 </script>
 
-<style scoped>
-.floorList__container {
+<style>
+.floorList-container {
+  min-height: 100%;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   gap: 1rem;
 }
 
-.floorList__nameCard {
-  flex: 27%;
+.floorList-nameCard {
+  min-height: 27%;
+  max-height: 27%;
 }
 
-.floorList__appFilter {
-  flex: 73%;
+.floorList-appFilter {
+  min-height: calc(73% - 1rem);
+  max-height: calc(73% - 1rem);
 }
 
-.floorList__appFilter-container {
+.floorList-appFilter-container {
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -43,20 +76,20 @@ export default {
   border-radius: var(--border-radius-sm);
 }
 
-.floorList__appFilter-content {
+.floorList-appFilter-content {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
 }
 
-.floorList__appFilter-name {
+.floorList-appFilter-name {
   font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 0.2rem;
   color: var(--color-font);
 }
 
-.floorList__appFilter-type {
+.floorList-appFilter-type {
   padding: 0.2rem 0.3rem;
   font-size: 0.7rem;
   font-weight: 600;

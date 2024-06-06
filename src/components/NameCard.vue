@@ -1,19 +1,26 @@
 <template>
   <div class="nameCard__container">
-    <div class="nameCard__title">usine</div>
-    <p class="nameCard__description">geographicbuilding</p>
+    <div class="nameCard__title">{{ name }}</div>
+    <p class="nameCard__description">{{ type }}</p>
     <div class="nameCard__dynamic-id--container">
       <div class="nameCard__dynamic-id--title">dynamicid:</div>
-      <span class="nameCard__dynamic-id--number">19274064</span>
+      <span class="nameCard__dynamic-id--number">{{ dynamicId }}</span>
     </div>
   </div>
 </template>
 
 <script>
-export default { name: "NameCard" };
+export default {
+  name: "NameCard",
+  props: {
+    dynamicId: Number,
+    name: String,
+    type: String,
+  },
+};
 </script>
 
-<style scoped>
+<style>
 .nameCard__container {
   display: flex;
   flex-direction: column;
