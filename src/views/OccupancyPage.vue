@@ -1,10 +1,15 @@
 <template>
-  <div class="occupancyPage__container"></div>
+  <div class="occupancyPage__container">
+    <BuildingList />
+  </div>
 </template>
 
 <script>
+import BuildingList from "@/components/BuildingList.vue";
+
 export default {
   name: "OccupancyPage",
+  components: { BuildingList },
 };
 </script>
 
