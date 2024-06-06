@@ -1,0 +1,28 @@
+:root {
+  --color-bg: #ecf1f5;
+  --color-font: #3b4757;
+  --color-grey: #f2f2f2;
+  --color-dark-grey: #817d7b;
+  --color-orange: #ec9118;
+  --color-pink: #fe7f78;
+  --color-green: #3d9068;
+  --color-white: #ffffff;
+
+  --border-radius-lg: 25px;
+  --border-radius-md: 15px;
+  --border-radius-sm: 5px;
+  --border-radius-xs: 3px;
+
+  --box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+}
