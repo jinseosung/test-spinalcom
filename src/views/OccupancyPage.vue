@@ -1,15 +1,17 @@
 <template>
   <div class="occupancyPage__container">
     <BuildingList />
+    <FloorList />
   </div>
 </template>
 
 <script>
 import BuildingList from "@/components/BuildingList.vue";
+import FloorList from "@/components/FloorList.vue";
 
 export default {
   name: "OccupancyPage",
-  components: { BuildingList },
+  components: { BuildingList, FloorList },
 };
 </script>
 
