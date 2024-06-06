@@ -1,10 +1,17 @@
 <template>
-  <div class="app__container"></div>
+  <div class="app__container">
+    <AppHeader />
+    <OccupancyPage />
+  </div>
 </template>
 
 <script>
+import AppHeader from "./components/AppHeader.vue";
+import OccupancyPage from "./views/OccupancyPage.vue";
+
 export default {
   name: "App",
+  components: { AppHeader, OccupancyPage },
 };
 </script>
 
