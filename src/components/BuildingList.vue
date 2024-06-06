@@ -1,17 +1,24 @@
 <template>
-  <AppFilter>
-    <li class="buildingList__container">
+  <AppFilter class="buildingList-appFilter" placeholder="Référence du bâtiment">
+    <li
+      @click="displayBuildingDescription(building)"
+      class="buildingList-appFilter-container"
+      v-for="building in buildings"
+      :key="building.staticId"
+    >
       <img
-        class="buildingList__img"
+        class="buildingList-appFilter-img"
         src="https://www.svgrepo.com/show/501866/factory.svg"
         alt="item img"
       />
-      <div class="buildingList__content">
-        <div class="buildingList__description">
-          <div class="buildingList__name">Usine</div>
-          <span class="buildingList__type">geographicbuilding</span>
+      <div class="buildingList-appFilter-content">
+        <div class="buildingList-appFilter-description">
+          <div class="buildingList-appFilter-name">{{ building.name }}</div>
+          <span class="buildingList-appFilter-type">{{ building.type }}</span>
         </div>
-        <span class="buildingList__dynamic-id">19274064</span>
+        <span class="buildingList-appFilter-dynamic-id">{{
+          building.dynamicId
+        }}</span>
       </div>
     </li>
   </AppFilter>
@@ -20,11 +27,32 @@
 <script>
 export default {
   name: "BuildingList",
+  data() {
+    return {
+      selectedBuilding: null,
+    };
+  },
+  props: {
+    buildings: {
+      type: Array,
+      required: true,
+    },
+  },
+  methods: {
+    displayBuildingDescription(building) {
+      this.selectedBuilding = building;
+      this.$emit("building-selected", building);
+    },
+  },
 };
 </script>
 
 <style>
-.buildingList__container {
+.buildingList-appFilter {
+  max-height: 100%;
+}
+
+.buildingList-appFilter-container {
   width: 100%;
   display: flex;
   align-items: center;
@@ -34,26 +62,26 @@ export default {
   border-radius: var(--border-radius-sm);
 }
 
-.buildingList__img {
+.buildingList-appFilter-img {
   width: 4.5rem;
   height: 4.5rem;
 }
 
-.buildingList__content {
+.buildingList-appFilter-content {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.buildingList__name {
+.buildingList-appFilter-name {
   font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 0.2rem;
   color: var(--color-font);
 }
 
-.buildingList__type {
+.buildingList-appFilter-type {
   padding: 0.2rem 0.3rem;
   font-size: 0.7rem;
   font-weight: 600;
@@ -63,7 +91,7 @@ export default {
   border-radius: var(--border-radius-xs);
 }
 
-.buildingList__dynamic-id {
+.buildingList-appFilter-dynamic-id {
   color: var(--color-dark-grey);
   font-style: italic;
   font-size: 0.8rem;

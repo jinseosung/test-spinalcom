@@ -1,12 +1,15 @@
 <template>
   <div class="piece-card__container">
-    <div class="piece-card__title">57</div>
+    <div class="piece-card__title">{{ nbrRooms }}</div>
     <span class="piece-card__description">Pièces</span>
   </div>
 </template>
 <script>
 export default {
   name: "RoomCountCard",
+  props: {
+    nbrRooms: { type: Number },
+  },
 };
 </script>
 <style>

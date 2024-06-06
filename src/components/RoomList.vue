@@ -1,18 +1,36 @@
 <template>
-  <div class="roomList__container">
-    <div class="roomList__nameCards">
-      <NameCard class="roomList__nameCard" />
-      <RoomCountCard class="roomList__roomCountCard" />
+  <div v-show="selectedFloor" class="roomList-container">
+    <div class="roomList-nameCards">
+      <NameCard
+        class="roomList-nameCard"
+        :dynamicId="selectedFloor?.dynamicId"
+        :name="selectedFloor?.name"
+        :type="selectedFloor?.type"
+      />
+      <RoomCountCard
+        class="roomList-roomCountCard"
+        :nbrRooms="selectedFloor?.children.length"
+      />
     </div>
-    <AppFilter class="roomList__appFilter">
-      <li class="roomList__appFilter-container">
-        <div class="roomList__appFilter-content">
-          <div class="roomList__appFilter-name">1-Condensateur</div>
-          <span class="roomList__appFilter-type">geographicbuilding</span>
-          <span class="roomList__appFilter-dynamic-id">19274064</span>
+    <AppFilter class="roomList-appFilter" placeholder="Référence de la pièce">
+      <li
+        class="roomList-appFilter-container"
+        v-for="(room, index) in selectedFloor?.children"
+        :key="room.staticId"
+      >
+        <div class="roomList-appFilter-content">
+          <div class="roomList-appFilter-name">{{ room.name }}</div>
+          <span class="roomList-appFilter-type">{{ room.type }}</span>
+          <span class="roomList-appFilter-dynamic-id">{{
+            room.dynamicId
+          }}</span>
         </div>
-        <div class="roomList__appFilter-occupancy-container">
-          <span class="roomList__appFilter-occupancy">non occupe</span>
+        <div class="roomList-appFilter-occupancy-container">
+          <span
+            class="roomList-appFilter-occupancy"
+            :class="getOccupancyClass(rooms[index])"
+            >{{ rooms[index] }}</span
+          >
         </div>
       </li>
     </AppFilter>
@@ -22,35 +40,103 @@
 <script>
 import RoomCountCard from "./RoomCountCard.vue";
 
-export default { name: "RoomList", components: { RoomCountCard } };
+export default {
+  name: "RoomList",
+  components: { RoomCountCard },
+  data() {
+    return {
+      rooms: [],
+    };
+  },
+  props: {
+    selectedFloor: {
+      type: Object,
+      default: null,
+    },
+  },
+  watch: {
+    selectedFloor: {
+      immediate: true,
+      handler(newSelectedFloor) {
+        if (newSelectedFloor) {
+          this.rooms = [];
+          newSelectedFloor.children.forEach((room, index) => {
+            this.fetchRoomData(room.dynamicId, index);
+          });
+        }
+      },
+    },
+  },
+  methods: {
+    async fetchRoomData(dynamicId, index) {
+      try {
+        const response = await fetch(
+          `https://api-developers.spinalcom.com/api/v1/room/${dynamicId}/control_endpoint_list`
+        );
+        const data = await response.json();
+
+        if (data.length !== 0) {
+          const occupancyData = data[0].endpoints.find(
+            (obj) => obj.type === "Occupation"
+          );
+          const occupancyValue = occupancyData
+            ? occupancyData.currentValue === true
+              ? "occupé"
+              : "non occupé"
+            : "indéfini";
+          this.$set(this.rooms, index, occupancyValue);
+        } else {
+          this.$set(this.rooms, index, "indéfini");
+        }
+      } catch (error) {
+        this.$set(this.rooms, index, "Erreur");
+        console.error(error);
+      }
+    },
+    getOccupancyClass(value) {
+      if (value === "indéfini") {
+        return "undefined";
+      } else if (value === "occupé") {
+        return "true";
+      } else {
+        return "false";
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>
-.roomList__container {
+.roomList-container {
+  min-height: 100%;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   gap: 1rem;
 }
 
-.roomList__nameCards {
+.roomList-nameCards {
   display: flex;
-  flex: 27%;
+  min-height: 27%;
+  max-height: 27%;
   gap: 0.6rem;
 }
 
-.roomList__nameCard {
+.roomList-nameCard {
   width: 72%;
 }
 
-.roomList__roomCountCard {
+.roomList-roomCountCard {
   width: 28%;
 }
 
-.roomList__appFilter {
-  flex: 73%;
+.roomList-appFilter {
+  min-height: calc(73% - 1rem);
+  max-height: calc(73% - 1rem);
 }
 
-.roomList__appFilter-container {
+.roomList-appFilter-container {
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -60,22 +146,22 @@ export default { name: "RoomList", components: { RoomCountCard } };
   border-radius: var(--border-radius-sm);
 }
 
-.roomList__appFilter-content {
+.roomList-appFilter-content {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.8rem;
 }
 
-.roomList__appFilter-name {
+.roomList-appFilter-name {
   font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 0.2rem;
   color: var(--color-font);
 }
 
-.roomList__appFilter-type,
-.roomList__appFilter-occupancy {
+.roomList-appFilter-type,
+.roomList-appFilter-occupancy {
   padding: 0.2rem 0.3rem;
   font-size: 0.7rem;
   font-weight: 600;
@@ -84,22 +170,34 @@ export default { name: "RoomList", components: { RoomCountCard } };
   border-radius: var(--border-radius-xs);
 }
 
-.roomList__appFilter-type {
+.roomList-appFilter-type {
   background-color: var(--color-dark-grey);
 }
 
-.roomList__appFilter-dynamic-id {
+.roomList-appFilter-dynamic-id {
   color: var(--color-dark-grey);
   font-style: italic;
   font-size: 0.8rem;
 }
 
-.roomList__appFilter-occupancy-container {
+.roomList-appFilter-occupancy-container {
   min-width: 11%;
   align-items: center;
 }
 
-.roomList__appFilter-occupancy {
+.roomList-appFilter-occupancy {
+  text-transform: uppercase;
+}
+
+.roomList-appFilter-occupancy.true {
+  background-color: var(--color-green);
+}
+
+.roomList-appFilter-occupancy.false {
   background-color: var(--color-pink);
+}
+
+.roomList-appFilter-occupancy.undefined {
+  background-color: var(--color-dark-grey);
 }
 </style>
