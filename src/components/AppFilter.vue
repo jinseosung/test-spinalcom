@@ -4,10 +4,16 @@
       <span class="appFilter-input-icon"
         ><font-awesome-icon icon="fa-solid fa-filter"
       /></span>
-      <input type="text" class="appFilter-input" :placeholder="placeholder" />
-      <button type="submit" class="appFilter-btn">
+      <input
+        v-model="searchValue"
+        @input="handleSearch"
+        type="text"
+        class="appFilter-input"
+        :placeholder="placeholder"
+      />
+      <span class="appFilter-search-icon">
         <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
-      </button>
+      </span>
     </form>
     <div class="appFilter-divider"></div>
     <ul class="appFilter-list">
@@ -21,6 +27,16 @@ export default {
   name: "AppFilter",
   props: {
     placeholder: String,
+  },
+  data() {
+    return {
+      searchValue: "",
+    };
+  },
+  methods: {
+    handleSearch() {
+      this.$emit("handleSearch", this.searchValue);
+    },
   },
 };
 </script>
@@ -48,7 +64,7 @@ export default {
 }
 
 .appFilter-input-icon,
-.appFilter-btn {
+.appFilter-search-icon {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -73,8 +89,7 @@ export default {
   border-radius: var(--border-radius-lg);
 }
 
-.appFilter-btn {
-  border: none;
+.appFilter-search-icon {
   right: 0.6rem;
 }
 

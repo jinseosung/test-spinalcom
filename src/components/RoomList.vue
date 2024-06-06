@@ -12,10 +12,14 @@
         :nbrRooms="selectedFloor?.children.length"
       />
     </div>
-    <AppFilter class="roomList-appFilter" placeholder="Référence de la pièce">
+    <AppFilter
+      class="roomList-appFilter"
+      placeholder="Référence de la pièce"
+      @handleSearch="getSearchValue"
+    >
       <li
         class="roomList-appFilter-container"
-        v-for="(room, index) in selectedFloor?.children"
+        v-for="(room, index) in filteredRooms"
         :key="room.staticId"
       >
         <div class="roomList-appFilter-content">
@@ -46,6 +50,7 @@ export default {
   data() {
     return {
       rooms: [],
+      searchValue: "",
     };
   },
   props: {
@@ -65,6 +70,16 @@ export default {
           });
         }
       },
+    },
+  },
+  computed: {
+    filteredRooms() {
+      if (!this.searchValue) {
+        return this.selectedFloor?.children;
+      }
+      return this.selectedFloor?.children.filter((room) =>
+        room.dynamicId.toString().includes(this.searchValue)
+      );
     },
   },
   methods: {
@@ -101,6 +116,9 @@ export default {
       } else {
         return "false";
       }
+    },
+    getSearchValue(value) {
+      this.searchValue = value;
     },
   },
 };
@@ -181,7 +199,7 @@ export default {
 }
 
 .roomList-appFilter-occupancy-container {
-  min-width: 11%;
+  min-width: 8%;
   align-items: center;
 }
 

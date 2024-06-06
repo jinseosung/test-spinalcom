@@ -1,9 +1,13 @@
 <template>
-  <AppFilter class="buildingList-appFilter" placeholder="Référence du bâtiment">
+  <AppFilter
+    class="buildingList-appFilter"
+    placeholder="Référence du bâtiment"
+    @handleSearch="getSearchValue"
+  >
     <li
       @click="displayBuildingDescription(building)"
       class="buildingList-appFilter-container"
-      v-for="building in buildings"
+      v-for="building in filteredBuildings"
       :key="building.staticId"
     >
       <img
@@ -30,6 +34,7 @@ export default {
   data() {
     return {
       selectedBuilding: null,
+      searchValue: "",
     };
   },
   props: {
@@ -38,10 +43,27 @@ export default {
       required: true,
     },
   },
+  computed: {
+    filteredBuildings() {
+      if (!this.searchValue) {
+        return this.buildings;
+      }
+      const filtered = this.buildings.filter((building) =>
+        building.dynamicId.toString().includes(this.searchValue)
+      );
+      if (filtered.length > 0) {
+        this.$emit("building-selected", filtered[0]);
+      }
+      return filtered;
+    },
+  },
   methods: {
     displayBuildingDescription(building) {
       this.selectedBuilding = building;
       this.$emit("building-selected", building);
+    },
+    getSearchValue(value) {
+      this.searchValue = value;
     },
   },
 };
@@ -49,6 +71,7 @@ export default {
 
 <style>
 .buildingList-appFilter {
+  min-width: 100%;
   max-height: 100%;
 }
 

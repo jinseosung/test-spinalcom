@@ -6,11 +6,15 @@
       :name="selectedBuilding?.name"
       :type="selectedBuilding?.type"
     />
-    <AppFilter class="floorList-appFilter" placeholder="Référence de l'étage">
+    <AppFilter
+      class="floorList-appFilter"
+      placeholder="Référence de l'étage"
+      @handleSearch="getSearchValue"
+    >
       <li
         @click="displayFloorDescription(floor)"
         class="floorList-appFilter-container"
-        v-for="floor in floors"
+        v-for="floor in filteredFloors"
         :key="floor.staticId"
       >
         <div class="floorList-appFilter-content">
@@ -28,6 +32,7 @@ export default {
   data() {
     return {
       selectedFloor: {},
+      searchValue: "",
     };
   },
   props: {
@@ -37,10 +42,27 @@ export default {
       required: true,
     },
   },
+  computed: {
+    filteredFloors() {
+      if (!this.searchValue) {
+        return this.floors;
+      }
+      const filtered = this.floors.filter((floor) =>
+        floor.dynamicId.toString().includes(this.searchValue)
+      );
+      if (filtered.length > 0) {
+        this.$emit("floor-selected", filtered[0]);
+      }
+      return filtered;
+    },
+  },
   methods: {
     displayFloorDescription(floor) {
       this.selectedFloor = floor;
       this.$emit("floor-selected", floor);
+    },
+    getSearchValue(value) {
+      this.searchValue = value;
     },
   },
 };
