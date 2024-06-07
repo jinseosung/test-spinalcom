@@ -19,7 +19,7 @@
     >
       <li
         class="roomList-appFilter-container"
-        v-for="(room, index) in filteredRooms"
+        v-for="room in filteredRooms"
         :key="room.staticId"
       >
         <div class="roomList-appFilter-content">
@@ -32,8 +32,14 @@
         <div class="roomList-appFilter-occupancy-container">
           <span
             class="roomList-appFilter-occupancy"
-            :class="getOccupancyClass(rooms[index])"
-            >{{ rooms[index] }}</span
+            :class="getOccupancyClass(room.currentValue)"
+            >{{
+              room.currentValue === "true"
+                ? "occupé"
+                : room.currentValue === "false"
+                ? "non occupé"
+                : "indéfini"
+            }}</span
           >
         </div>
       </li>
@@ -59,19 +65,6 @@ export default {
       default: null,
     },
   },
-  watch: {
-    selectedFloor: {
-      immediate: true,
-      handler(newSelectedFloor) {
-        if (newSelectedFloor) {
-          this.rooms = [];
-          newSelectedFloor.children.forEach((room, index) => {
-            this.fetchRoomData(room.dynamicId, index);
-          });
-        }
-      },
-    },
-  },
   computed: {
     filteredRooms() {
       if (!this.searchValue) {
@@ -83,35 +76,10 @@ export default {
     },
   },
   methods: {
-    async fetchRoomData(dynamicId, index) {
-      try {
-        const response = await fetch(
-          `https://api-developers.spinalcom.com/api/v1/room/${dynamicId}/control_endpoint_list`
-        );
-        const data = await response.json();
-
-        if (data.length !== 0) {
-          const occupancyData = data[0].endpoints.find(
-            (obj) => obj.type === "Occupation"
-          );
-          const occupancyValue = occupancyData
-            ? occupancyData.currentValue === true
-              ? "occupé"
-              : "non occupé"
-            : "indéfini";
-          this.$set(this.rooms, index, occupancyValue);
-        } else {
-          this.$set(this.rooms, index, "indéfini");
-        }
-      } catch (error) {
-        this.$set(this.rooms, index, "Erreur");
-        console.error(error);
-      }
-    },
     getOccupancyClass(value) {
-      if (value === "indéfini") {
+      if (value === "undefined") {
         return "undefined";
-      } else if (value === "occupé") {
+      } else if (value === "true") {
         return "true";
       } else {
         return "false";

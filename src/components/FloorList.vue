@@ -21,14 +21,28 @@
           <div class="floorList-appFilter-name">{{ floor.name }}</div>
           <span class="floorList-appFilter-type">{{ floor.type }}</span>
         </div>
-        <div class="">90%</div>
+        <DonutChart
+          :percentage="
+            Math.floor(
+              (floor.children.filter(
+                (room) =>
+                  room.type === 'geographicRoom' && room.currentValue === 'true'
+              ).length /
+                floor.children.length) *
+                100
+            )
+          "
+        />
       </li>
     </AppFilter>
   </div>
 </template>
 <script>
+import DonutChart from "./DonutChart.vue";
+
 export default {
   name: "FloorList",
+  components: { DonutChart },
   data() {
     return {
       selectedFloor: {},
